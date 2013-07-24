@@ -1,14 +1,15 @@
 #!/bin/bash -e
 cd $(dirname $0)
 ROOT=${HOME}
-BUILDER=${ROOT}/closure-library/closure/bin/build/closurebuilder.py
+LIB_DIR=${ROOT}/closure-library
+BUILDER=${LIB_DIR}/closure/bin/build/closurebuilder.py
 COMPILER=${ROOT}/closure-compiler/compiler.jar
 if [[ ! -f "${BUILDER}" ]]; then
-  echo "Expected Closure Builder at ${BUILDER}"
+  echo "Downloading Closure Library"
   git clone https://code.google.com/p/closure-library/ ${ROOT}/closure-library
 fi
 if [[ ! -f ${COMPILER} ]]; then
-  echo "Expected Closure Compiler at ${COMPILER}"
+  echo "Downloading Closure Compiler"
   curl -O 'http://closure-compiler.googlecode.com/files/compiler-latest.zip'
   unzip compiler-latest.zip -d ~/closure-compiler
   rm compiler-latest.zip
@@ -20,4 +21,4 @@ python ${BUILDER} \
   --output_file=start-compiled.js \
   --output_mode=compiled \
   --root=. \
-  --root=${ROOT}/closure-library/
+  --root=${LIB_DIR}
