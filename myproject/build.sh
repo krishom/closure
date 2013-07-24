@@ -14,8 +14,15 @@ if [[ ! -f ${COMPILER} ]]; then
   unzip compiler-latest.zip -d ~/closure-compiler
   rm compiler-latest.zip
 fi
-python ${BUILDER} \
+if [[ " $* " == *" debug "* ]]; then
+  echo "Compiling with debug flags"
+  DEBUG_FLAGS='
+    --compiler_flags=--formatting=PRETTY_PRINT
+    --compiler_flags=--debug'
+fi
+python ${BUILDER} ${DEBUG_FLAGS} \
   --compiler_flags="--compilation_level=ADVANCED_OPTIMIZATIONS" \
+  --compiler_flags="--warning_level=VERBOSE" \
   --compiler_jar=${COMPILER} \
   --namespace="myproject.start" \
   --output_file=start-compiled.js \
