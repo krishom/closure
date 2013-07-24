@@ -2,9 +2,13 @@ goog.provide('myproject.start');
 
 goog.require('goog.dom');
 
+
+/**
+ * Displays a div.
+ */
 myproject.start = function() {
   var newDiv = goog.dom.createDom('h1', {'style': 'background-color:#EEE'},
-    'Hello world!');
+      'Hello world!');
   goog.dom.appendChild(document.body, newDiv);
 };
 
