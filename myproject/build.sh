@@ -1,16 +1,16 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 cd $(dirname $0)
 ROOT=${HOME}
 LIB_DIR=${ROOT}/closure-library
 BUILDER=${LIB_DIR}/closure/bin/build/closurebuilder.py
-COMPILER=${ROOT}/closure-compiler/compiler.jar
+COMPILER=$(ls -1 ${ROOT}/closure-compiler/*.jar | sort -n | tail -n 1)
 if [[ ! -f "${BUILDER}" ]]; then
   echo "Downloading Closure Library"
-  git clone https://code.google.com/p/closure-library/ ${ROOT}/closure-library
+  git clone https://github.com/google/closure-library.git ${ROOT}/closure-library
 fi
 if [[ ! -f ${COMPILER} ]]; then
   echo "Downloading Closure Compiler"
-  curl -O 'http://closure-compiler.googlecode.com/files/compiler-latest.zip'
+  curl -O 'https://dl.google.com/closure-compiler/compiler-latest.zip'
   unzip compiler-latest.zip -d ~/closure-compiler
   rm compiler-latest.zip
 fi
@@ -20,12 +20,11 @@ if [[ " $* " == *" debug "* ]]; then
     --compiler_flags=--formatting=PRETTY_PRINT
     --compiler_flags=--debug'
 fi
-python ${BUILDER} ${DEBUG_FLAGS} \
-  --compiler_flags="--compilation_level=ADVANCED_OPTIMIZATIONS" \
-  --compiler_flags="--warning_level=VERBOSE" \
-  --compiler_jar=${COMPILER} \
-  --namespace="myproject.start" \
-  --output_file=start-compiled.js \
-  --output_mode=compiled \
-  --root=. \
-  --root=${LIB_DIR}
+java -jar ${COMPILER} ${DEBUG_FLAGS} \
+  --compilation_level=ADVANCED \
+  --warning_level=VERBOSE \
+  --js=start.js \
+  --js=${LIB_DIR}/'**.js' \
+  --js_output_file=start-compiled.js \
+  --entry_point=myproject.start \
+  --dependency_mode=STRICT
